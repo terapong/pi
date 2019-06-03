@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+		<p:panelGrid>
+			<p:row>
+				<p:column>
+					<p:panel>
+						<p:panelGrid>
+							<p:row>
+								<p:column>
+									<h:outputText value="เลือกโรงเรือน : " />
+									<p:selectOneMenu id="selHouse"	value="#{managehousebean.selectedHouseId}">
+										<f:selectItems value="#{managehousebean.houses}" var="h"	itemLabel="#{h.name}" itemValue="#{h.id}" />
+										<p:ajax event="valueChange" listener="#{managehousebean.selHouseChange}" update="outPutTab sw1 alert" process="@this" />
+									</p:selectOneMenu>
+								</p:column>
+								<p:column style="text-align: right">
+									<h:outputText value="เปิด/ปิด ไฟ : " />
+								</p:column>
+								<p:column>
+									<p:inputSwitch value="#{managehousebean.house.sw1}" id="sw1">
+				            <p:ajax listener="#{managehousebean.onOff}" update="outPutTab" process="@this"/>
+				        	</p:inputSwitch>
+								</p:column>
+								<p:column style="text-align: right">
+				          <h:outputText value="เปิด/ปิด สัญญานเตือนภัย : " />
+				        </p:column>
+				        <p:column>
+				          <p:inputSwitch value="#{managehousebean.house.openAlert}" id="alert">
+				            <p:ajax listener="#{managehousebean.onOffAlert()}" update="outPutTab" process="@this"/>
+				          </p:inputSwitch>
+				        </p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:panel>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<p:panel>
+						<p:panelGrid id="outPutTab">
+							<p:row>
+								<p:column colspan="2">
+									<p:panel style="text-align:center;">
+										<h:outputText value="#{managehousebean.house.name}" style="font-weight: bold; font-size:200%;" />
+									</p:panel>
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column colspan="2">
+									<p:panel style="background-color: #000;">
+										<p:panelGrid>
+								    	<p:row>
+								    		<p:column><img src="#{managehousebean.imgNAOn}" title="N/A" height="30" width="30"/></p:column>
+								    		<p:column><img src="#{managehousebean.imgAlert}" title="Alert" height="30" width="30"/></p:column>
+								    		<p:column><img src="#{managehousebean.imgSW}" title="ไฟหน้าโรงเรือน" height="30" width="30"/></p:column>
+								    		<p:column><img src="#{managehousebean.imgFrel}" title="พัดลมกระจายความชื้น" height="30" width="30"/></p:column>
+								    		<p:column>
+								    			<p:panelGrid style="background-color: blue; width: 50">
+								    				<p:row>
+								    					<p:column>
+								    						<h:outputText style="color: #fff; font-weight: bold; font-weight:1000;" value="#{managehousebean.temIn}" />
+								    					</p:column>
+								    				</p:row>
+								    				<p:row>
+								    					<p:column>
+								    						<h:outputText style="color: #fff; font-weight: bold; font-weight: 1000;" value="#{managehousebean.humIn}" />
+								    					</p:column>
+								    				</p:row>
+								    			</p:panelGrid>
+								    		</p:column>
+								    		<p:column>
+								    			<p:panelGrid style="background-color: blue; width: 50">
+								    				<p:row>
+								    					<p:column>
+								    						<h:outputText style="color: #fff; font-weight: bold; font-weight:1000;" value="#{managehousebean.temOut}" />
+								    					</p:column>
+								    				</p:row>
+								    				<p:row>
+								    					<p:column>
+								    						<h:outputText style="color: #fff; font-weight: bold; font-weight: 1000;" value="#{managehousebean.humOut}" />
+								    					</p:column>
+								    				</p:row>
+								    			</p:panelGrid>
+								    		</p:column>
+								    		<p:column><img src="#{managehousebean.imgFin}" title="พัดลม ดูดอากาศเข้า" height="30" width="30"/></p:column>
+								    		<p:column><img src="#{managehousebean.imgFout}" title="พัดลม ดูดอากาศออก" height="30" width="30"/></p:column>
+								    		<p:column><img src="#{managehousebean.imgPout}" title="พ่นน้ำ ภายนอก" height="30" width="30"/></p:column>
+								    		<p:column><img src="#{managehousebean.imgPin}" title="พ่นน้ำ ภายใน" height="30" width="30"/></p:column>
+								    	</p:row>
+							    	</p:panelGrid>
+							    </p:panel>
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column>
+								  <p:fieldset legend="Sensor ภายใน">
+									 <p:chart type="metergauge" model="#{managehousebean.tempMeterIn}" style="width:320px;height:220px" />
+									 <p:chart type="metergauge" model="#{managehousebean.humMeterIn}" style="width:320px;height:220px" />
+									</p:fieldset>
+								</p:column>
+								<p:column>
+								  <p:fieldset legend="Sensor ภายนอก">
+									 <p:chart type="metergauge" model="#{managehousebean.tempMeterOut}" style="width:320px;height:220px" />
+									 <p:chart type="metergauge" model="#{managehousebean.humMeterOut}" style="width:320px;height:220px" />
+									</p:fieldset>
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+					</p:panel>
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+		<p:poll interval="1" listener="#{managehousebean.refreshMeter}" update="outPutTab" />
+	</ui:composition>
+</html>

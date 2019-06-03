@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"> 
+
+<h:head>
+	<title>Sensor Managment System</title>
+	<link type="text/css" rel="stylesheet" href="css/bmms.css" />
+	<link rel="shortcut icon" href="images/kvc.ico" />
+</h:head> 
+<body> 
+	<p:growl id="growl" showDetail="true" autoUpdate="true" 	showSummary="false"/>
+	<h:form id="formSW" prependId="true">
+		<p:panelGrid>
+			<p:row>
+				<p:column>
+					<h:outputText value="เลือกโรงเรือน : " />
+						<p:selectOneMenu id="selHouse"	value="#{switchcontrolbean.selectedHouseId}">
+							<f:selectItems value="#{switchcontrolbean.houses}" var="h"	itemLabel="#{h.name}" itemValue="#{h.id}" />
+							<p:ajax event="valueChange" listener="#{switchcontrolbean.selHouseChange}" update="outPutTab" process="@this" />
+						</p:selectOneMenu>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<p:panelGrid id="outPutTab">
+						<p:row>
+							<p:column>
+								<h:outputText value="เปิด/ปิด ไฟโรงเรือน"/>
+							</p:column>
+							<p:column>
+								<p:inputSwitch value="#{switchcontrolbean.r_sw_1}">
+			            <p:ajax listener="#{switchcontrolbean.OnOff_R_SW_1}" />
+			        	</p:inputSwitch>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="เปิด/ปิด ปั๊มน้ำ ภายใน"/>
+							</p:column>
+							<p:column>
+								<p:inputSwitch value="#{switchcontrolbean.r_pin}">
+			            <p:ajax listener="#{switchcontrolbean.OnOff_R_Pin}" />
+			        	</p:inputSwitch>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="เปิด/ปิด ปั๊มน้ำ ภายนอก"/>
+							</p:column>
+							<p:column>
+								<p:inputSwitch value="#{switchcontrolbean.r_pout}">
+			            <p:ajax listener="#{switchcontrolbean.OnOff_R_Pout}" />
+			        	</p:inputSwitch>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="เปิด/ปิด พัดลม กระจายความชื้น"/>
+							</p:column>
+							<p:column>
+								<p:inputSwitch value="#{switchcontrolbean.r_frel}">
+			            <p:ajax listener="#{switchcontrolbean.OnOff_R_Frel}" />
+			        	</p:inputSwitch>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="เปิด/ปิด พัดลม ดูดอากาศ เข้า"/>
+							</p:column>
+							<p:column>
+								<p:inputSwitch value="#{switchcontrolbean.r_fin}">
+			            <p:ajax listener="#{switchcontrolbean.OnOff_R_Fin}" />
+			        	</p:inputSwitch>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="เปิด/ปิด พัดลม ดูดอากาศ ออก"/>
+							</p:column>
+							<p:column>
+								<p:inputSwitch value="#{switchcontrolbean.r_fout}">
+			            <p:ajax listener="#{switchcontrolbean.OnOff_R_Fout}" />
+			        	</p:inputSwitch>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="เปิด/ปิด Alert"/>
+							</p:column>
+							<p:column>
+								<p:inputSwitch value="#{switchcontrolbean.r_alert}">
+			            <p:ajax listener="#{switchcontrolbean.OnOff_R_Alert}" />
+			        	</p:inputSwitch>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="เปิด หมด"/>
+							</p:column>
+							<p:column>
+								<p:inputSwitch value="#{switchcontrolbean.r_openall}">
+			            <p:ajax listener="#{switchcontrolbean.Open_All}" />
+			        	</p:inputSwitch>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="ปิด หมด"/>
+							</p:column>
+							<p:column>
+								<p:inputSwitch value="#{switchcontrolbean.r_closeall}">
+			            <p:ajax listener="#{switchcontrolbean.Close_All}" />
+			        	</p:inputSwitch>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+	</h:form>
+</body> 
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+		<p:panel closable="true" header="#{pi3sessionbean.programName}">
+			<p:ajax event="close" listener="#{menubean.handleClose}"  update=":mainCenterForm"/>
+			<p:dataTable resizableColumns="true" id="tblHouse" var="r" value="#{housebean.slave}" paginator="true" paginatorPosition="bottom" rows="15" selectionMode="single" selection="#{housebean.selectedRow}" rowKey="#{r.id}">
+        <f:facet name="header">
+            <p:commandButton icon="ui-icon-plus" disabled="#{housebean.disabledAdd}" value="เพิ่ม" actionListener="#{housebean.btnNewClick}" oncomplete="PF('newObjectDlg').show()" process="@this" update=":mainCenterForm" resetValues="true"/>
+        </f:facet>
+        <p:column headerText="Id">
+            <h:outputText value="#{r.id}" />
+        </p:column>
+        <p:column headerText="ชื่อโรงเรือน">
+            <h:outputText value="#{r.name}" />
+        </p:column>
+        <p:column headerText="เห็ด">
+            <h:outputText value="#{r.mushRoom.name}" />
+        </p:column>
+        <p:column headerText="Sensor">
+            <h:outputText value="#{r.nodeMCU.name}" />
+        </p:column>
+        <p:column headerText="Create Date">
+            <h:outputText value="#{r.updateDate}" />
+        </p:column>
+        <p:column headerText="">
+        	<p:commandLink value="แก้ไข" actionListener="#{housebean.btnEditClick(r)}" oncomplete="PF('newObjectDlg').show()" process="@this" update=":mainCenterForm" resetValues="true"/>
+        </p:column>
+				<p:column headerText="">
+					<p:commandLink value="ลบ" actionListener="#{housebean.btnDeleteClick(r)}" oncomplete="PF('confirmDeleteCarDialog').show()" process="@this" resetValues="true"/>
+				</p:column>
+    	</p:dataTable>
+    	
+	    	<p:confirmDialog message="คุณต้องการ ลบ ใช่หรือไม่ ?" closable="flase" header="ลบ" severity="alert" widgetVar="confirmDeleteCarDialog" appendTo="@(body)">  
+			  <p:commandButton value="ใช่" update=":mainCenterForm" onclick="PF('confirmDeleteCarDialog').hide()" actionListener="#{housebean.confirmDeleteClick}" process="@this" ajax="true" icon="ui-icon-check"/>  
+			  <p:commandButton value="ไม่ใช่" onclick="PF('confirmDeleteCarDialog').hide()" type="button"  icon="ui-icon-closethick"/>   
+		  </p:confirmDialog>
+			
+			<p:dialog id="newObjectDlg" header="เพิ่ม #{pi3sessionbean.programName}" widgetVar="newObjectDlg"  modal="true" appendTo="@(body)" width="700px" height="500px" closable="true">
+				<p:panelGrid id="panelInput">
+					<p:row>
+						<p:column>
+							<h:outputText value="ชื่อโรงเรือน: " />
+						</p:column>
+						<p:column>
+							<p:inputText value="#{housebean.selectedRow.name}"/>
+						</p:column>
+						<p:column>
+							<h:outputText value="ชนิดเห็ด : " />
+						</p:column>
+						<p:column>
+							<p:selectOneMenu id="selMushRoom" value="#{housebean.mushRoomId}">
+								<f:selectItems value="#{housebean.mushRooms}" var="m"	itemLabel="#{m.name}" itemValue="#{m.id}" />
+								<p:ajax event="valueChange" listener="#{housebean.selMushRoomChange}" update="tblHouse" process="@this" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<h:outputText value="Sensor : " />
+						</p:column>
+						<p:column colspan="3">
+							<p:selectOneMenu id="selNodeMCU" value="#{housebean.nodeMCUId}">
+								<f:selectItems value="#{housebean.nodeMCUs}" var="n"	itemLabel="#{n.name}" itemValue="#{n.id}" />
+								<p:ajax event="valueChange" listener="#{housebean.selNodeMCUChange}" update="tblHouse" process="@this" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="4" style="text-align: center">
+							<p:commandButton value="บันทึก" icon="ui-icon-disk" actionListener="#{housebean.btnSaveClick}" update=":mainCenterForm" process="@this panelInput" oncomplete="if (args.validationFailed) {PF('newObjectDlg').show(); } else {PF('newObjectDlg').hide(); }"/>
+							<p:commandButton value="ยกเลิก" icon="ui-icon-close" onclick="PF('newObjectDlg').hide()"/>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:dialog>
+		</p:panel>
+	</ui:composition>
+</html>

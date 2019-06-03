@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+		<h:form id="mainMenuForm" prependId="false">
+			<p:panelGrid columns="1" styleClass="alignTopCenterMenu">
+				<p:menu style="width:180px">  
+  				<p:menuitem value="โรงเรือน" icon="ui-icon-home" action="#{menubean.manageHouseClick}" ajax="false"/>
+  				<p:menuitem value="ประวัติ" icon="ui-icon-disk" action="#{menubean.messageHistoryClick}" ajax="false"/>
+     		</p:menu>
+     		<p:separator/>
+     		<p:panelMenu style="width:180px">
+     			<p:submenu label="จัดการระบบ">
+        		<p:menuitem value="ช้อมูล กลุ่ม" icon="ui-icon-gear" action="#{menubean.roleClick}" ajax="false"/>
+        		<p:menuitem value="ช้อมูล ผู้ใช้งาน" icon="ui-icon-person" action="#{menubean.userClick}" ajax="false"/>
+        		<p:menuitem value="ช้อมูล ผลิตภันท์" icon="ui-icon-image" action="#{menubean.mushRoomClick}" ajax="false"/>
+        		<p:menuitem value="ช้อมูล NodeMCU" icon="ui-icon-signal-diag" action="#{menubean.nodeMCUClick}" ajax="false"/>
+        		<p:menuitem value="ช้อมูล Topic" icon="ui-icon-comment" action="#{menubean.topicClick}" ajax="false"/>
+        		<p:menuitem value="ช้อมูล โรงเรือน" icon="ui-icon-home" action="#{menubean.houseClick}" ajax="false"/>
+        	</p:submenu>
+     		</p:panelMenu> 
+     		 
+     		<p:separator/>
+       		<p:panel style="width: 200px;">
+       			<a href="images/tms.pdf" target="blank">คู่มือการใช้งาน</a>
+       		</p:panel>
+      	<p:separator/>
+      	
+      	<p:panel style="width: 200px;">
+     			<p:panelGrid columns="1" columnClasses="alignTopCenterMenu">
+     				<p:row>
+     					<p:column><h:outputText value="ผู้ใช้งานระบบ : " style="font-weight: bold"/></p:column>
+     					<p:column><h:outputText value="#{indexbean.user.name}" style="font-weight: bold"/></p:column>
+     				</p:row>
+     				<p:row>
+     					<p:column colspan="2">
+     						<p:commandLink value="เปลี่ยนรหัสผ่าน" onclick="PF('changePassDlg').show()"/>
+     					</p:column>
+     				</p:row>
+     				<p:row>
+     					<p:column colspan="2">
+     						<p:commandButton value="ออกจากระบบ" ajax="false" action="#{indexbean.logout}" icon="ui-icon-extlink"/>
+     					</p:column>
+     				</p:row>
+     			</p:panelGrid>
+     		</p:panel>
+			</p:panelGrid>
+			
+			<p:dialog dynamic="true" id="changePassDlg" header="เปลี่ยนรหัสผ่าน" widgetVar="changePassDlg"  modal="true" appendTo="@(body)" closable="true"  width="400px" height="200px">
+				<i><h:outputText value="กรอกข้อมูลทุกช่องที่มี *" style="color: red; vertical-align: middle; line-height: 25px"/></i>
+				<p:panelGrid id="changePassPanel">
+					<p:row>
+						<p:column>
+							<h:outputText value="Password เก่า : "/><h:outputText styleClass="required" value="*" />
+						</p:column>
+						<p:column>
+							<p:password value="#{indexbean.oldPass}" feedback= "false" required="true" requiredMessage="ต้องกรอกรหัสผ่านเดิม"/>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<h:outputText value="Password ใหม่ : "/><h:outputText styleClass="required" value="*" />
+						</p:column>
+						<p:column>
+							<p:password value="#{indexbean.newPass}" feedback= "true" goodLabel="เหมาะสม" strongLabel="ดีมาก" 
+							weakLabel="อ่อนแอ" match="conPwd" promptLabel="กรอกรหัสผ่าน" validatorMessage="รหัสผ่านใหม่กับรหัสผ่านยืนยัน ต้องเหมือนกัน" required="true" requiredMessage="ต้องกรอกรหัสผ่านใหม่"/>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<h:outputText value="Password ใหม่ (อีกครั้ง) : "/><h:outputText styleClass="required" value="*" />
+						</p:column>
+						<p:column>
+							<p:password id="conPwd" value="#{indexbean.newPassAgain}" feedback= "true" goodLabel="เหมาะสม" strongLabel="ดีมาก" 
+							weakLabel="อ่อนแอ" promptLabel="กรอกรหัสผ่าน" required="true" requiredMessage="ต้องกรอกรหัสผ่านใหม่ยืนยัน"/>
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2">
+							<p:commandButton value="ตกลง" actionListener="#{indexbean.changPassClick}" process="@this changePassPanel" 
+							oncomplete="if (args.validationFailed) {PF('changePassDlg').show();} else {PF('changePassDlg').hide();}"/>
+							<p:commandButton value="ยกเลิก" onclick="PF('changePassDlg').hide()"/>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:dialog>
+		</h:form>
+	</ui:composition>
+</html>

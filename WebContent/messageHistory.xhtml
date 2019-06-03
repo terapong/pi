@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+		<p:panel closable="true" header="#{pi3sessionbean.programName}">
+			<p:ajax event="close" listener="#{menubean.handleClose}"  update=":mainCenterForm"/>
+				<p:panelGrid style="width: 100%">
+					<p:row>
+						<p:column>
+							<p:panel>
+								<p:panelGrid>
+									<p:row>
+										<p:column>
+											<h:outputText value="เลือกโรงเรือน : " />
+										</p:column>
+										<p:column>
+											<p:selectOneMenu id="selHouse"	value="#{messagehistorybean.selectedHouseId}">
+												<f:selectItems value="#{messagehistorybean.houses}" var="h"	itemLabel="#{h.name}" itemValue="#{h.id}" />
+												<p:ajax event="valueChange" listener="#{messagehistorybean.selHouseChange}" update="outPutTab" process="@this" />
+											</p:selectOneMenu>
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+							</p:panel>	
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:panel>
+								<p:panelGrid id="outPutTab"  style="width: 100%">
+									<p:row>
+										<p:column>
+											<p:panel style="text-align:center;">
+												<h:outputText value="#{messagehistorybean.house.name}" style="font-weight: bold; font-size:200%;" />
+											</p:panel>
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:chart type="line" model="#{messagehistorybean.lineModelIn}" style="height:300px; width:100%" id="line"/>
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+							</p:panel>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			<p:poll interval="1" listener="#{messagehistorybean.refreshMeter}" update="outPutTab" />
+		</p:panel>
+	</ui:composition>
+</html>

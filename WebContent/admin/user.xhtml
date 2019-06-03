@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<p:panel closable="true" header="#{pi3sessionbean.programName}">
+		<p:ajax event="close" listener="#{menubean.handleClose}"
+			update=":mainCenterForm" />
+		<p:panelGrid>
+			<p:row>
+				<p:column style="text-align: center">
+					<p:selectOneMenu id="selMaster"
+						value="#{userbean.selectedMasterId}">
+						<f:selectItems value="#{userbean.master}" var="m"
+							itemLabel="#{m.name}" itemValue="#{m.id}" />
+						<p:ajax event="valueChange" listener="#{userbean.selMasterChange}" update="tblUser" process="@this" />
+					</p:selectOneMenu>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<p:dataTable resizableColumns="true" id="tblUser" var="r" value="#{userbean.slave}"
+						paginator="true" paginatorPosition="bottom" rows="15"
+						selectionMode="single" selection="#{userbean.selectedRow}"
+						rowKey="#{r.id}">
+						<f:facet name="header">
+							<p:commandButton disabled="#{userbean.addDisabled}"
+								icon="ui-icon-plus" value="เพิ่ม"
+								actionListener="#{userbean.btnNewClick}"
+								oncomplete="PF('newObjectDlg').show()" process="@this"
+								update=":mainCenterForm" resetValues="true" />
+						</f:facet>
+						<p:column headerText="Id">
+							<h:outputText value="#{r.id}" />
+						</p:column>
+						<p:column headerText="Name">
+							<h:outputText value="#{r.name}" />
+						</p:column>
+						<p:column headerText="Password">
+							<h:outputText value="#{r.password}" />
+						</p:column>
+						<p:column headerText="Create Date">
+							<h:outputText value="#{r.updateDate}" />
+						</p:column>
+						<p:column headerText="">
+							<p:commandLink value="แก้ไข"
+								actionListener="#{userbean.btnEditClick(r)}"
+								oncomplete="PF('newObjectDlg').show()" process="@this"
+								update=":mainCenterForm" resetValues="true" />
+						</p:column>
+						<p:column headerText="">
+							<p:commandLink value="ลบ"
+								actionListener="#{userbean.btnDeleteClick(r)}"
+								oncomplete="PF('confirmDeleteCarDialog').show()" process="@this"
+								resetValues="true" />
+						</p:column>
+					</p:dataTable>
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+	</p:panel>
+	
+	<p:confirmDialog message="คุณต้องการ ลบ ใช่หรือไม่ ?" closable="flase" header="ลบ" severity="alert" widgetVar="confirmDeleteCarDialog" appendTo="@(body)">  
+		  <p:commandButton value="ใช่" update=":mainCenterForm" onclick="PF('confirmDeleteCarDialog').hide()" actionListener="#{userbean.confirmDeleteClick}" process="@this" ajax="true" icon="ui-icon-check"/>  
+		  <p:commandButton value="ไม่ใช่" onclick="PF('confirmDeleteCarDialog').hide()" type="button"  icon="ui-icon-closethick"/>   
+	  </p:confirmDialog>
+	
+	<p:dialog id="newObjectDlg" header="เพิ่มผู้ใช้งาน" widgetVar="newObjectDlg"  modal="true" appendTo="@(body)" width="700px" height="500px" closable="true">
+			<p:panelGrid id="panelInput">
+				<p:row>
+					<p:column>
+						<h:outputText for="inName" value="ชื่อผู้ใช้งาน : " />
+					</p:column>
+					<p:column>
+						<p:inputText id="inName" value="#{userbean.selectedRow.name}" required="true" requiredMessage="กรุณา กรอกชื่อผู้ใช้งาน"/>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<h:outputText for="inPassword" value="รหัสผ่าน : " />
+					</p:column>
+					<p:column>
+						<p:password id="inPassword" value="#{userbean.tempPass}" feedback="true" rendered="true" requiredMessage="กรุณา กรอกรหัสผ่าน"/>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column colspan="2" style="text-align: center">
+						<p:commandButton value="บันทึก" icon="ui-icon-disk" actionListener="#{userbean.btnSaveClick}" update=":mainCenterForm" process="@this panelInput" oncomplete="if (args.validationFailed) {PF('newObjectDlg').show(); } else {PF('newObjectDlg').hide(); }"/>
+						<p:commandButton value="ยกเลิก" icon="ui-icon-close" onclick="PF('newObjectDlg').hide()"/>
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+	</p:dialog>
+</ui:composition>
+</html>

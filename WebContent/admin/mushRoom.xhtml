@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition>
+	
+	<p:panel closable="true" header="#{pi3sessionbean.programName}">
+			<p:ajax event="close" listener="#{menubean.handleClose}"  update=":mainCenterForm"/>
+			<p:dataTable resizableColumns="true" resizeMode="expand" id="tblMushRoom" var="r" value="#{mushroombean.slave}" paginator="true" paginatorPosition="bottom" rows="15" selectionMode="single" selection="#{mushroombean.selectedRow}" rowKey="#{r.id}">
+        <f:facet name="header">
+            <p:commandButton icon="ui-icon-plus" value="เพิ่ม" actionListener="#{mushroombean.btnNewClick}" oncomplete="PF('newObjectDlg').show()" process="@this" update=":mainCenterForm" resetValues="true"/>
+        </f:facet>
+        
+        <p:columnGroup type="header">
+        		<p:row>
+        				<p:column rowspan="3" headerText="Name" />
+                <p:column colspan="4" headerText="ภายใน" />
+                <p:column colspan="4" headerText="ภายนอก" />
+                <p:column colspan="2" rowspan="3" headerText="" />
+            </p:row>
+            <p:row>
+                <p:column colspan="2" headerText="Temperature ( °C)" />
+                <p:column colspan="2" headerText="Humidity ( rH)" />
+                <p:column colspan="2" headerText="Temperature ( °C)" />
+                <p:column colspan="2" headerText="Humidity ( rH)" />
+            </p:row>
+            <p:row>
+                <p:column headerText="Min" />
+                <p:column headerText="Max" />
+                <p:column headerText="Min" />
+                <p:column headerText="Max" />
+                <p:column headerText="Min" />
+                <p:column headerText="Max" />
+                <p:column headerText="Min" />
+                <p:column headerText="Max" />
+            </p:row>
+        </p:columnGroup>
+        
+        <p:column>
+            <h:outputText value="#{r.name}" />
+        </p:column>
+        <p:column style="text-align: right">
+            <h:outputText value="#{r.temperatureMin}" />
+        </p:column>
+        <p:column style="text-align: right">
+            <h:outputText value="#{r.temperatureMax}" />
+        </p:column>
+        <p:column style="text-align: right">
+            <h:outputText value="#{r.humidityMin}" />
+        </p:column>
+        <p:column style="text-align: right">
+            <h:outputText value="#{r.humidityMax}" />
+        </p:column>
+        <p:column style="text-align: right">
+            <h:outputText value="#{r.temperatureOutMin}" />
+        </p:column>
+        <p:column style="text-align: right">
+            <h:outputText value="#{r.temperatureOutMax}" />
+        </p:column>
+        <p:column style="text-align: right">
+            <h:outputText value="#{r.humidityOutMin}" />
+        </p:column>
+        <p:column style="text-align: right">
+            <h:outputText value="#{r.humidityOutMax}" />
+        </p:column>	
+        <p:column style="text-align: center">
+        	<p:commandLink value="แก้ไข" actionListener="#{mushroombean.btnEditClick(r)}" oncomplete="PF('newObjectDlg').show()" process="@this" update=":mainCenterForm" resetValues="true"/>
+        </p:column>
+				<p:column style="text-align: center">
+					<p:commandLink value="ลบ" actionListener="#{mushroombean.btnDeleteClick(r)}" oncomplete="PF('confirmDeleteCarDialog').show()" process="@this" resetValues="true"/>
+				</p:column> -->
+    	</p:dataTable>
+		</p:panel>
+		
+		<p:confirmDialog message="คุณต้องการ ลบ ใช่หรือไม่ ?" closable="flase" header="ลบ" severity="alert" widgetVar="confirmDeleteCarDialog" appendTo="@(body)">  
+		  <p:commandButton value="ใช่" update=":mainCenterForm" onclick="PF('confirmDeleteCarDialog').hide()" actionListener="#{mushroombean.confirmDeleteClick}" process="@this" ajax="true" icon="ui-icon-check"/>  
+		  <p:commandButton value="ไม่ใช่" onclick="PF('confirmDeleteCarDialog').hide()" type="button"  icon="ui-icon-closethick"/>   
+	  </p:confirmDialog>
+		
+		<p:dialog id="newObjectDlg" header="เพิ่ม เห็ด" widgetVar="newObjectDlg"  modal="true" appendTo="@(body)" width="800px" height="600px" closable="true">
+			<p:panelGrid id="panelInput">
+				<p:row>
+					<p:column style="width: 80px">
+						<h:outputText for="inName" value="ชนิด เห็ด : " />
+					</p:column>
+					<p:column>
+						<p:inputText id="inName" value="#{mushroombean.selectedRow.name}"/>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column colspan="2">
+				    <p:accordionPanel multiple="true" id="outAddjust" activeIndex="0,1,2,3,4">
+				        <p:tab title="Temperature ภายใน" id = "outTemp">
+				        	<p:panelGrid>
+				        		<p:row>
+				        			<p:column style="width: 250px">
+				        				<h:outputText id="outTempMin" value="Set Temperature Min to : #{mushroombean.selectedRow.temperatureMin} °C" />
+				        			</p:column>
+				        			<p:column>
+				        				<h:inputHidden id="txtTempMin" value="#{mushroombean.selectedRow.temperatureMin}" />
+					        			<p:slider for="txtTempMin" display="outTempMin" style="width: 380px" displayTemplate="Set Temperature Min to : {value} °C">
+					        				<p:ajax event="slideEnd" listener="#{mushroombean.onSlideTempMinEnd}" update="outAddjust"/>
+					        			</p:slider>
+				        			</p:column>
+				        		</p:row>
+				        		<p:row>
+				        			<p:column style="width: 250px">
+				        				<h:outputText id="outTempMax" value="Set Temperature Max to : #{mushroombean.selectedRow.temperatureMax} °C" />
+				        			</p:column>
+				        			<p:column>
+				        				<h:inputHidden id="txtTempMax" value="#{mushroombean.selectedRow.temperatureMax}" />
+					        			<p:slider for="txtTempMax" display="outTempMax" style="width: 380px" displayTemplate="Set Temperature Max to : {value} °C">
+					        				<p:ajax event="slideEnd" listener="#{mushroombean.onSlideTempMaxEnd}" update="outAddjust"/>
+					        			</p:slider>
+				        			</p:column>
+				        		</p:row>
+				        	</p:panelGrid>
+				        </p:tab>
+				        <p:tab title="Humidity ภายใน" id = "outHum">
+				        	<p:panelGrid>
+				        		<p:row>
+				        			<p:column style="width: 250px">
+				        				<h:outputText id="outHumMin" value="Set Humidity Min to : #{mushroombean.selectedRow.humidityMin} rH" />
+				        			</p:column>
+				        			<p:column>
+				        				<h:inputHidden id="txtHumMin" value="#{mushroombean.selectedRow.humidityMin}" />
+					        			<p:slider for="txtHumMin" display="outHumMin" style="width: 380px" displayTemplate="Set Humidity Min to : {value} rH">
+					        				<p:ajax event="slideEnd" listener="#{mushroombean.onSlideHumMinEnd}" update="outAddjust"/>
+					        			</p:slider>
+				        			</p:column>
+				        		</p:row>
+				        		<p:row>
+				        			<p:column style="width: 250px">
+				        				<h:outputText id="outHumMax" value="Set Humidity Max to : #{mushroombean.selectedRow.humidityMax} rH" />
+				        			</p:column>
+				        			<p:column>
+				        				<h:inputHidden id="txtHumMax" value="#{mushroombean.selectedRow.humidityMax}" />
+					        			<p:slider for="txtHumMax" display="outHumMax" style="width: 380px" displayTemplate="Set Humidity Max to : {value} rH">
+					        				<p:ajax event="slideEnd" listener="#{mushroombean.onSlideHumMaxEnd}" update="outAddjust"/>
+					        			</p:slider>
+				        			</p:column>
+				        		</p:row>
+				        	</p:panelGrid>
+				        </p:tab>
+				        <p:tab title="Temperature ภายนอก" id = "outTempOut">
+				        	<p:panelGrid>
+				        		<p:row>
+				        			<p:column style="width: 250px">
+				        				<h:outputText id="outTempOutMin" value="Set Temperature Min to : #{mushroombean.selectedRow.temperatureOutMin} °C" />
+				        			</p:column>
+				        			<p:column>
+				        				<h:inputHidden id="txtTempOutMin" value="#{mushroombean.selectedRow.temperatureOutMin}" />
+					        			<p:slider for="txtTempOutMin" display="outTempOutMin" style="width: 380px" displayTemplate="Set Temperature Min to : {value} °C">
+					        				<p:ajax event="slideEnd" listener="#{mushroombean.onSlideTempOutMinEnd}" update="outAddjust"/>
+					        			</p:slider>
+				        			</p:column>
+				        		</p:row>
+				        		<p:row>
+				        			<p:column style="width: 250px">
+				        				<h:outputText id="outTempOutMax" value="Set Temperature Max to : #{mushroombean.selectedRow.temperatureOutMax} °C" />
+				        			</p:column>
+				        			<p:column>
+				        				<h:inputHidden id="txtTempOutMax" value="#{mushroombean.selectedRow.temperatureOutMax}" />
+					        			<p:slider for="txtTempOutMax" display="outTempOutMax" style="width: 380px" displayTemplate="Set Temperature Max to : {value} °C">
+					        				<p:ajax event="slideEnd" listener="#{mushroombean.onSlideTempOutMaxEnd}" update="outAddjust"/>
+					        			</p:slider>
+				        			</p:column>
+				        		</p:row>
+				        	</p:panelGrid>
+				        </p:tab>
+				        <p:tab title="Humidity ภายนอก" id = "outHumOut">
+				        	<p:panelGrid>
+				        		<p:row>
+				        			<p:column style="width: 250px">
+				        				<h:outputText id="outHumOutMin" value="Set Humidity Min to : #{mushroombean.selectedRow.humidityOutMin} °C" />
+				        			</p:column>
+				        			<p:column>
+				        				<h:inputHidden id="txtHumOutMin" value="#{mushroombean.selectedRow.humidityOutMin}" />
+					        			<p:slider for="txtHumOutMin" display="outHumOutMin" style="width: 380px" displayTemplate="Set Humidity Min to : {value} °C">
+					        				<p:ajax event="slideEnd" listener="#{mushroombean.onSlideHumOutMinEnd}" update="outAddjust"/>
+					        			</p:slider>
+				        			</p:column>
+				        		</p:row>
+				        		<p:row>
+				        			<p:column style="width: 250px">
+				        				<h:outputText id="outHumOutMax" value="Set Humidity Max to : #{mushroombean.selectedRow.humidityOutMax} °C" />
+				        			</p:column>
+				        			<p:column>
+				        				<h:inputHidden id="txtHumOutMax" value="#{mushroombean.selectedRow.humidityOutMax}" />
+					        			<p:slider for="txtHumOutMax" display="outHumOutMax" style="width: 380px" displayTemplate="Set Humidity Max to : {value} °C">
+					        				<p:ajax event="slideEnd" listener="#{mushroombean.onSlideHumOutMaxEnd}" update="outAddjust"/>
+					        			</p:slider>
+				        			</p:column>
+				        		</p:row>
+				        	</p:panelGrid>
+				        </p:tab>
+				    </p:accordionPanel>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column colspan="2" style="text-align: center">
+						<p:commandButton value="บันทึก" icon="ui-icon-disk" actionListener="#{mushroombean.btnSaveClick}" update=":mainCenterForm" process="@this panelInput" oncomplete="if (args.validationFailed) {PF('newObjectDlg').show(); } else {PF('newObjectDlg').hide(); }"/>
+						<p:commandButton value="ยกเลิก" icon="ui-icon-close" onclick="PF('newObjectDlg').hide()"/>
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+		</p:dialog>
+	
+	</ui:composition>
+</html>
